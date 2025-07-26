@@ -22,17 +22,20 @@ type User struct {
 	Username datatypes.NullString `gorm:"column:username;unique"`
 }
 
-func InitTable(db *gorm.DB) error {
-	return db.AutoMigrate(&User{})
-}
-
 type UserDao interface {
 	Insert(ctx context.Context, user *User) error
 	FindByEmail(ctx context.Context, email string) (User, error)
+	FindById(ctx context.Context, id uint) (User, error)
 }
 
 type GormUserDao struct {
 	db *gorm.DB
+}
+
+func (g *GormUserDao) FindById(ctx context.Context, id uint) (User, error) {
+	var user User
+	err := g.db.WithContext(ctx).Model(&User{}).Where("id=?", id).First(&user).Error
+	return user, err
 }
 
 func (g *GormUserDao) Insert(ctx context.Context, user *User) error {

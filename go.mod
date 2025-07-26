@@ -4,6 +4,7 @@ go 1.21.5
 
 require (
 	github.com/dlclark/regexp2 v1.11.5
+	github.com/ecodeclub/ekit v0.0.10
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/golang-jwt/jwt/v5 v5.2.3

@@ -23,7 +23,11 @@ func main() {
 	userRepository := repository.NewUserRepository(userDao)
 	userService := service.NewUserService(userRepository, loggerV1)
 	userHandler := web.NewUserHandler(userService, jwtHandler)
-	webServer := ioc.InitWebServer(ginMiddlewares, userHandler)
+	postDaoGorm := dao.NewPostDaoGorm(db)
+	postRepository := repository.NewPostRepository(postDaoGorm, userRepository)
+	postService := service.NewPostService(postRepository, loggerV1)
+	postHandler := web.NewPostHandler(postService, loggerV1)
+	webServer := ioc.InitWebServer(ginMiddlewares, userHandler, postHandler)
 	loggerV1.Info("webserver initialed.")
 	err := webServer.Run(":8081")
 	if err != nil {
@@ -34,10 +38,8 @@ func main() {
 func initViperV1() {
 	cfile := pflag.String("config", "config/config.yaml", "config file path")
 	pflag.Parse()
-	//viper.SetConfigName("dev")
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile(*cfile)
-	//viper.AddConfigPath("config")
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("read config fail %s", err))

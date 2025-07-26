@@ -26,8 +26,8 @@ func NewJWTHandler(c *cache.Cache) *JWTHandler {
 		signingMethod: jwt.SigningMethodHS512,
 		refreshKey:    []byte(`sbUZPISeSMJIwJ4pfc1AdkkpHCFPUJPJ`),
 		JWTKey:        []byte(`sbUZPISeSMJIwJ4pfc1AdkkpHCFPUJPJ`),
-		rcExpiration:  0,
-		tkExpiration:  0,
+		rcExpiration:  time.Hour * 24 * 7,
+		tkExpiration:  time.Minute * 30,
 		SsidKeyFmt:    "users:ssid:%s",
 	}
 }
@@ -85,7 +85,7 @@ func (j *JWTHandler) SetRefreshToken(ctx *gin.Context, uid uint, ssid string) er
 
 func (j *JWTHandler) CheckSession(ctx *gin.Context, ssid string) error {
 	_, ok := j.c.Get(fmt.Sprintf(j.SsidKeyFmt, ssid))
-	if !ok {
+	if ok {
 		return fmt.Errorf("invalid ssid")
 	}
 	return nil

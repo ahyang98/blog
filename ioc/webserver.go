@@ -8,10 +8,11 @@ import (
 	"github.com/patrickmn/go-cache"
 )
 
-func InitWebServer(mdls []gin.HandlerFunc, userHdl *web.UserHandler) *gin.Engine {
+func InitWebServer(mdls []gin.HandlerFunc, userHdl *web.UserHandler, postHdl *web.PostHandler) *gin.Engine {
 	server := gin.Default()
 	server.Use(mdls...)
 	userHdl.RegisterRoutes(server)
+	postHdl.RegisterRoute(server)
 	return server
 }
 

@@ -15,10 +15,19 @@ var (
 type UserRepository interface {
 	Create(ctx context.Context, user *domain.User) error
 	FindByEmail(ctx context.Context, email string) (domain.User, error)
+	FindById(ctx context.Context, id uint) (domain.User, error)
 }
 
 type userRepository struct {
 	userDao dao.UserDao
+}
+
+func (d *userRepository) FindById(ctx context.Context, id uint) (domain.User, error) {
+	user, err := d.userDao.FindById(ctx, id)
+	if err != nil {
+		return domain.User{}, err
+	}
+	return toDomainUser(user), nil
 }
 
 func NewUserRepository(userDao dao.UserDao) UserRepository {
