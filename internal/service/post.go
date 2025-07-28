@@ -12,11 +12,16 @@ type Post interface {
 	GetByPostId(ctx context.Context, uid uint, postId uint) (posts domain.Post, err error)
 	Save(ctx context.Context, post domain.Post) (id uint, err error)
 	Delete(ctx context.Context, uid uint, id uint) error
+	IncreaseComment(ctx context.Context, id uint)
 }
 
 type PostService struct {
 	repo repository.Post
 	l    logger.LoggerV1
+}
+
+func (p *PostService) IncreaseComment(ctx context.Context, id uint) {
+	p.repo.IncreaseComment(ctx, id)
 }
 
 func (p *PostService) GetByAuthor(ctx context.Context, uid uint) (posts []domain.Post, err error) {

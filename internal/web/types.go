@@ -12,3 +12,10 @@ type PostVo struct {
 	AuthorName   string `json:"author_name,omitempty"`
 	CommentCount uint   `json:"comment_count,omitempty"`
 }
+
+type CommentVo struct {
+	Id         uint   `json:"id,omitempty"`
+	Content    string `json:"content,omitempty"`
+	AuthorId   uint   `json:"author_id,omitempty"`
+	AuthorName string `json:"author_name,omitempty"`
+}

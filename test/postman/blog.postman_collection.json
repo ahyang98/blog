@@ -1,0 +1,220 @@
+{
+	"info": {
+		"_postman_id": "142b974b-71b7-4ec6-93ad-a5e497b218d3",
+		"name": "blog",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30977025"
+	},
+	"item": [
+		{
+			"name": "sign up",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"ahyang@3.net\",\r\n    \"password\": \"123456@abc\",\r\n    \"confirm_password\": \"123456@abc\",\r\n    \"user_name\":\"ahyang\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{webook}}/users/signup",
+					"protocol": "http",
+					"host": [
+						"{{webook}}"
+					],
+					"path": [
+						"users",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 从response header中获取值\r",
+							"var data = postman.getResponseHeader(\"X-Jwt-Token\");\r",
+							"\r",
+							"// 将获取的值保存到环境变量中\r",
+							"pm.environment.set(\"JWTToken\", data);\r",
+							"\r",
+							"// 从response header中获取值\r",
+							"var refreshToken = postman.getResponseHeader(\"X-Refresh-Token\");\r",
+							"\r",
+							"// 将获取的值保存到环境变量中\r",
+							"pm.environment.set(\"RefreshToken\", refreshToken);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"ahyang@3.net\",\r\n    \"password\": \"123456@abc\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{webook}}/users/login",
+					"protocol": "http",
+					"host": [
+						"{{webook}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list posts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{webook}}/posts/",
+					"protocol": "http",
+					"host": [
+						"{{webook}}"
+					],
+					"path": [
+						"posts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post detail",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bear {{JWTToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{webook}}/posts/1",
+					"protocol": "http",
+					"host": [
+						"{{webook}}"
+					],
+					"path": [
+						"posts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{JWTToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{webook}}/posts/",
+					"protocol": "http",
+					"host": [
+						"{{webook}}"
+					],
+					"path": [
+						"posts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list comment",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bear {{JWTToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{webook}}/comment?post_id=1",
+					"protocol": "http",
+					"host": [
+						"{{webook}}"
+					],
+					"path": [
+						"comment"
+					],
+					"query": [
+						{
+							"key": "post_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add comment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bear {{JWTToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"content\":\"nice\",\r\n    \"post_id\":1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{webook}}/comment",
+					"protocol": "http",
+					"host": [
+						"{{webook}}"
+					],
+					"path": [
+						"comment"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

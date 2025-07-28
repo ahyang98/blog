@@ -27,7 +27,11 @@ func main() {
 	postRepository := repository.NewPostRepository(postDaoGorm, userRepository)
 	postService := service.NewPostService(postRepository, loggerV1)
 	postHandler := web.NewPostHandler(postService, loggerV1)
-	webServer := ioc.InitWebServer(ginMiddlewares, userHandler, postHandler)
+	commentGormDao := dao.NewCommentGormDao(db)
+	commentRepo := repository.NewCommentRepo(commentGormDao, userRepository)
+	commentService := service.NewCommentService(commentRepo, postService, loggerV1)
+	commentHandler := web.NewCommentHandler(commentService, loggerV1)
+	webServer := ioc.InitWebServer(ginMiddlewares, userHandler, postHandler, commentHandler)
 	loggerV1.Info("webserver initialed.")
 	err := webServer.Run(":8081")
 	if err != nil {

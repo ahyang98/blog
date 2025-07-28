@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"time"
 )
 
@@ -22,10 +23,24 @@ type PostDao interface {
 	Update(ctx context.Context, post Post) error
 	Insert(ctx context.Context, post Post) (uint, error)
 	Delete(ctx context.Context, uid uint, id uint) error
+	Add(ctx context.Context, id uint)
 }
 
 type PostDaoGorm struct {
 	db *gorm.DB
+}
+
+func (p *PostDaoGorm) Add(ctx context.Context, id uint) {
+	var post Post
+	p.db.Transaction(func(tx *gorm.DB) error {
+		err := tx.Clauses(clause.Locking{
+			Strength: "UPDATE",
+		}).First(&post, id).Error
+		if err != nil {
+			return err
+		}
+		return tx.Exec("update posts set CommentCount = CommentCount + 1 where id = ?", id).Error
+	})
 }
 
 func (p *PostDaoGorm) GetByAuthor(ctx context.Context, uid uint) ([]Post, error) {
